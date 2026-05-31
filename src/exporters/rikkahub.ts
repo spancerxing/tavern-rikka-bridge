@@ -97,11 +97,10 @@ function buildMergedSystemPrompt(ws: WorkspaceState): string {
 }
 
 function placementFromScope(scope: RegexScope): number[] {
-  switch (scope) {
-    case "USER": return [1];
-    case "ASSISTANT": return [2];
-    case "BOTH": return [1, 2];
-  }
+  const placement: number[] = [];
+  if (scope.user) placement.push(1);
+  if (scope.assistant) placement.push(2);
+  return placement.length > 0 ? placement : [1, 2];
 }
 
 function buildRegexScripts(entries: RegexEntry[]) {
@@ -113,7 +112,7 @@ function buildRegexScripts(entries: RegexEntry[]) {
     trimStrings: e.trimStrings,
     placement: placementFromScope(e.scope),
     disabled: e.disabled,
-    markdownOnly: false,
+    markdownOnly: e.scope.display,
     promptOnly: false,
     runOnEdit: false,
     substituteRegex: 0,

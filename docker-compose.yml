@@ -1,10 +1,9 @@
 services:
   tavern-rikka-bridge:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: tavern-rikka-bridge:latest
+    image: ghcr.io/spancerxing/tavern-rikka-bridge:latest
     container_name: tavern-rikka-bridge
     restart: unless-stopped
     ports:
       - "17823:3000"
+    environment:
+      - BASE_PATH=/

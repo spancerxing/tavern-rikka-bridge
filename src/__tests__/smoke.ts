@@ -101,7 +101,7 @@ function runV2Test() {
   assert(workspace.systemPromptBlocks.some(b => b.key === "depth_prompt"), "存在 depth_prompt 块");
   assert(workspace.systemPromptBlocks.some(b => b.key === "mes_example"), "存在 mes_example 块");
   assert(workspace.regexEntries.length === 1, "正则数");
-  assert(workspace.regexEntries[0].scope === "ASSISTANT", "正则 scope");
+  assert(workspace.regexEntries[0].scope.assistant === true, "正则 scope.assistant");
   assert(workspace.lorebooks.length === 1, "内嵌世界书");
   assert(workspace.lorebooks[0].entries.length === 1, "条目数");
   assert(workspace.presetMessages.length === 1, `预设消息只有 first_mes 一条（实际${workspace.presetMessages.length}）`);

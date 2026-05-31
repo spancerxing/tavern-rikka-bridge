@@ -3,7 +3,12 @@
 // 编辑时：UI 直接修改 WorkspaceState
 // 导出时：WorkspaceState → rikkahub 兼容 JSON
 
-export type RegexScope = "USER" | "ASSISTANT" | "BOTH";
+// rikkahub 正则影响范围：助手、用户、仅视觉（多选）
+export interface RegexScope {
+  user: boolean;       // 用户消息
+  assistant: boolean;  // 助手回复
+  display: boolean;    // 仅视觉（markdownOnly）
+}
 
 // 与 rikkahub `InjectionPosition` 枚举的 @SerialName 对齐（小写下划线）
 export type LorebookPosition =

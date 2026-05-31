@@ -20,7 +20,7 @@ export type WorkspaceAction =
   | { type: "REMOVE_PRESET"; id: string }
   | { type: "MOVE_PRESET"; id: string; direction: -1 | 1 }
   | { type: "PROMOTE_PRESET_TO_FIRST_MES"; id: string }
-  | { type: "ADD_REGEX" }
+  | { type: "ADD_REGEX"; preset?: Partial<RegexEntry> }
   | { type: "UPDATE_REGEX"; id: string; patch: Partial<RegexEntry> }
   | { type: "REMOVE_REGEX"; id: string }
   | { type: "ADD_ALTERNATE_GREETING" }
@@ -109,12 +109,12 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
           ...state.regexEntries,
           {
             id: uuid(),
-            name: "新正则",
-            findRegex: "",
-            replaceString: "",
-            scope: "BOTH",
-            disabled: false,
-            trimStrings: [],
+            name: action.preset?.name ?? "新正则",
+            findRegex: action.preset?.findRegex ?? "",
+            replaceString: action.preset?.replaceString ?? "",
+            scope: action.preset?.scope ?? { user: true, assistant: true, display: false },
+            disabled: action.preset?.disabled ?? false,
+            trimStrings: action.preset?.trimStrings ?? [],
           },
         ],
       };

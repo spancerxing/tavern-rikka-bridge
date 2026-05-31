@@ -93,14 +93,15 @@ function buildPresetMessages(firstMes: string | undefined): PresetMessage[] {
 
 // ---------- 正则 ----------
 
-function regexScopeFromPlacement(placement: number[] | undefined): RegexScope {
-  if (!placement || placement.length === 0) return "BOTH";
-  const hasUser = placement.includes(1);
-  const hasAi = placement.includes(2);
-  if (hasUser && hasAi) return "BOTH";
-  if (hasUser) return "USER";
-  if (hasAi) return "ASSISTANT";
-  return "BOTH";
+function regexScopeFromPlacement(placement: number[] | undefined, markdownOnly?: boolean): RegexScope {
+  if (!placement || placement.length === 0) {
+    return { user: true, assistant: true, display: false };
+  }
+  return {
+    user: placement.includes(1),
+    assistant: placement.includes(2),
+    display: markdownOnly ?? false,
+  };
 }
 
 function buildRegexEntries(scripts: STRegexScript[] | undefined): RegexEntry[] {
@@ -110,7 +111,7 @@ function buildRegexEntries(scripts: STRegexScript[] | undefined): RegexEntry[] {
     name: s.scriptName ?? "未命名正则",
     findRegex: s.findRegex ?? "",
     replaceString: s.replaceString ?? "",
-    scope: regexScopeFromPlacement(s.placement),
+    scope: regexScopeFromPlacement(s.placement, s.markdownOnly),
     disabled: s.disabled ?? false,
     trimStrings: s.trimStrings ?? [],
   }));

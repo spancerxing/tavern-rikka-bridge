@@ -1,13 +1,19 @@
 import type { PanelProps } from "./types";
-import type { RegexEntry, RegexScope } from "../types/model";
-
-const SCOPES: { value: RegexScope; label: string }[] = [
-  { value: "USER", label: "USER（用户消息）" },
-  { value: "ASSISTANT", label: "ASSISTANT（助手回复）" },
-  { value: "BOTH", label: "BOTH（双向）" },
-];
+import type { RegexEntry } from "../types/model";
 
 export function RegexPanel({ workspace, dispatch }: PanelProps) {
+  const addHtmlTagRegex = () => {
+    dispatch({
+      type: "ADD_REGEX",
+      preset: {
+        name: "正文隐藏html标签",
+        findRegex: "<\\/?[a-zA-Z][a-zA-Z0-9-]*[^>]*>",
+        replaceString: "",
+        scope: { user: false, assistant: true, display: true },
+      },
+    });
+  };
+
   return (
     <div className="panel">
       <div className="panel-head">
@@ -15,9 +21,14 @@ export function RegexPanel({ workspace, dispatch }: PanelProps) {
           rikkahub 不直接接收正则脚本（它的 AssistantRegex 在 Assistant 内部），导出时会随角色卡 extensions.regex_scripts
           一起写入；rikkahub 不读，但其它酒馆兼容工具能读到。这里的字段映射 SillyTavern Regex 扩展。
         </p>
-        <button className="btn small" onClick={() => dispatch({ type: "ADD_REGEX" })}>
-          + 新增正则
-        </button>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <button className="btn small" onClick={addHtmlTagRegex}>
+            正文隐藏html标签
+          </button>
+          <button className="btn small" onClick={() => dispatch({ type: "ADD_REGEX" })}>
+            + 新增正则
+          </button>
+        </div>
       </div>
 
       {workspace.regexEntries.length === 0 && (
@@ -62,9 +73,6 @@ function RegexEditor({
           onChange={e => onChange({ name: e.target.value })}
           placeholder="脚本名称"
         />
-        <select value={entry.scope} onChange={e => onChange({ scope: e.target.value as RegexScope })}>
-          {SCOPES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
         <label className="toggle">
           <input
             type="checkbox"
@@ -73,11 +81,37 @@ function RegexEditor({
           />
           启用
         </label>
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={entry.scope.user}
+              onChange={e => onChange({ scope: { ...entry.scope, user: e.target.checked } })}
+            />
+            用户
+          </label>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={entry.scope.assistant}
+              onChange={e => onChange({ scope: { ...entry.scope, assistant: e.target.checked } })}
+            />
+            助手
+          </label>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={entry.scope.display}
+              onChange={e => onChange({ scope: { ...entry.scope, display: e.target.checked } })}
+            />
+            仅视觉
+          </label>
+        </div>
         <button className="btn small danger" onClick={onRemove}>删除</button>
       </div>
       <div className="row gap stack-md">
         <label className="field grow">
-          <span className="field-label">正则表达式（不含 //）{regexValid ? "" : "  ⚠ 语法错误"}</span>
+          <span className="field-label">正则表达式{regexValid ? "" : "  ⚠ 语法错误"}</span>
           <textarea
             rows={3}
             className={regexValid ? "" : "error-input"}
