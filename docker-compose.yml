@@ -4,6 +4,8 @@ services:
     container_name: tavern-rikka-bridge
     restart: unless-stopped
     ports:
-      - "17823:3000"
+      - "3000:3000"
     environment:
       - BASE_PATH=/
+    build:
+      context: .

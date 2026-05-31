@@ -31,41 +31,61 @@ npm run build    # outputs dist/, deployable as a static site
 
 ## Docker deployment
 
+### Environment variables
+
+| Variable | Description | Default | Example |
+|----------|-------------|---------|---------|
+| `BASE_PATH` | Deployment path prefix | `/` | `/custom-path/` |
+
 ### Using pre-built image
 
 ```bash
+# Deployed at root path
 docker run -p 3000:3000 ghcr.io/spancerxing/tavern-rikka-bridge:latest
 ```
 
-Access at `http://localhost:3000`
-
-### Deploy under a custom path
-
-Set the `BASE_PATH` environment variable to deploy under a custom path:
+### Custom path
 
 ```bash
-docker run -p 3000:3000 -e BASE_PATH=/custom-path/ ghcr.io/spancerxing/tavern-rikka-bridge:latest
+docker run -p 3000:3000 \
+  -e BASE_PATH=/custom-path/ \
+  ghcr.io/spancerxing/tavern-rikka-bridge:latest
 ```
 
 ### Docker Compose
+
+Edit `docker-compose.yml`:
 
 ```yaml
 services:
   tavern-rikka-bridge:
     image: ghcr.io/spancerxing/tavern-rikka-bridge:latest
+    container_name: tavern-rikka-bridge
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      - BASE_PATH=/  # Optional: set custom base path
-    restart: unless-stopped
+      - BASE_PATH=/  # Optional, default: /
+    build:
+      context: .
+```
+
+Start:
+
+```bash
+docker-compose up -d
 ```
 
 ### Build from source
 
 ```bash
 docker build -t tavern-rikka-bridge .
-docker run -p 3000:3000 -e BASE_PATH=/custom-path/ tavern-rikka-bridge
+docker run -p 3000:3000 \
+  -e BASE_PATH=/custom-path/ \
+  tavern-rikka-bridge
 ```
+
+> **Security Note**: This is a pure frontend application without server-side authentication. If deploying to the public internet, consider configuring access control at the reverse proxy layer (e.g., Nginx).
 
 ## Workflow
 

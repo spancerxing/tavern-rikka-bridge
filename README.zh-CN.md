@@ -31,41 +31,61 @@ npm run build    # 产出 dist/,可作为静态站点托管
 
 ## Docker 部署
 
+### 环境变量说明
+
+| 环境变量 | 说明 | 默认值 | 示例 |
+|---------|------|--------|------|
+| `BASE_PATH` | 部署路径前缀 | `/` | `/custom-path/` |
+
 ### 使用预构建镜像
 
 ```bash
+# 部署在根路径
 docker run -p 3000:3000 ghcr.io/spancerxing/tavern-rikka-bridge:latest
 ```
 
-访问 `http://localhost:3000`
-
-### 部署到自定义路径
-
-设置 `BASE_PATH` 环境变量以部署到自定义路径：
+### 自定义路径
 
 ```bash
-docker run -p 3000:3000 -e BASE_PATH=/custom-path/ ghcr.io/spancerxing/tavern-rikka-bridge:latest
+docker run -p 3000:3000 \
+  -e BASE_PATH=/custom-path/ \
+  ghcr.io/spancerxing/tavern-rikka-bridge:latest
 ```
 
 ### Docker Compose
+
+编辑 `docker-compose.yml`：
 
 ```yaml
 services:
   tavern-rikka-bridge:
     image: ghcr.io/spancerxing/tavern-rikka-bridge:latest
+    container_name: tavern-rikka-bridge
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      - BASE_PATH=/  # 可选：设置自定义基础路径
-    restart: unless-stopped
+      - BASE_PATH=/  # 可选，默认 /
+    build:
+      context: .
+```
+
+启动：
+
+```bash
+docker-compose up -d
 ```
 
 ### 从源码构建
 
 ```bash
 docker build -t tavern-rikka-bridge .
-docker run -p 3000:3000 -e BASE_PATH=/custom-path/ tavern-rikka-bridge
+docker run -p 3000:3000 \
+  -e BASE_PATH=/custom-path/ \
+  tavern-rikka-bridge
 ```
+
+> **安全提示**：本工具是纯前端应用，不包含服务器端认证。如需部署到公网，建议在反向代理层（如 Nginx）配置访问控制。
 
 ## 工作流
 
