@@ -8,6 +8,11 @@ License: **[MIT](LICENSE)**.
 
 ---
 
+
+## Live Demo
+
+Try it online at **https://afooddestroyer.dpdns.org/trb/**.
+
 ## What problem does this solve?
 
 `rikkahub`'s built-in *"Import SillyTavern character card (JSON)"* parser only reads **6 fields** (`name` / `first_mes` / `system_prompt` / `description` / `personality` / `scenario`). Anything else — `mes_example`, `alternate_greetings`, `creator_notes`, `post_history_instructions`, `depth_prompt`, `extensions.regex_scripts`, `character_book` — is **silently dropped**.

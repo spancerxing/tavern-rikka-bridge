@@ -8,6 +8,11 @@ License: **[MIT](LICENSE)**.
 
 ---
 
+
+## 在线测试
+
+试用地址:**https://afooddestroyer.dpdns.org/trb/**。
+
 ## 解决的问题
 
 `rikkahub` 自带的"导入酒馆角色卡(JSON)"解析器**只读 6 个字段**(`name` / `first_mes` / `system_prompt` / `description` / `personality` / `scenario`),导致 `mes_example` / `alternate_greetings` / `creator_notes` / `post_history_instructions` / `depth_prompt` / `extensions.regex_scripts` / `character_book` 等内容**全部丢失**。
