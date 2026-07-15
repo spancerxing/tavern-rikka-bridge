@@ -31,30 +31,17 @@ npm run build    # outputs dist/, deployable as a static site
 
 ## Docker deployment
 
-### Environment variables
-
-| Variable | Description | Default | Example |
-|----------|-------------|---------|---------|
-| `BASE_PATH` | Deployment path prefix | `/` | `/custom-path/` |
-
 ### Using pre-built image
 
 ```bash
-# Deployed at root path
 docker run -p 3000:3000 ghcr.io/spancerxing/tavern-rikka-bridge:latest
 ```
 
-### Custom path
-
-```bash
-docker run -p 3000:3000 \
-  -e BASE_PATH=/custom-path/ \
-  ghcr.io/spancerxing/tavern-rikka-bridge:latest
-```
+Then the app is reachable at `http://localhost:3000/`.
 
 ### Docker Compose
 
-Edit `docker-compose.yml`:
+`docker-compose.yml`:
 
 ```yaml
 services:
@@ -64,8 +51,6 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
-    environment:
-      - BASE_PATH=/  # Optional, default: /
     build:
       context: .
 ```
@@ -73,19 +58,19 @@ services:
 Start:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Build from source
 
 ```bash
 docker build -t tavern-rikka-bridge .
-docker run -p 3000:3000 \
-  -e BASE_PATH=/custom-path/ \
-  tavern-rikka-bridge
+docker run -p 3000:3000 tavern-rikka-bridge
 ```
 
-> **Security Note**: This is a pure frontend application without server-side authentication. If deploying to the public internet, consider configuring access control at the reverse proxy layer (e.g., Nginx).
+> **Security Note**: This is a pure frontend application without server-side
+> authentication. If deploying to the public internet, consider configuring
+> access control at the reverse proxy layer (e.g., Nginx).
 
 ## Workflow
 
